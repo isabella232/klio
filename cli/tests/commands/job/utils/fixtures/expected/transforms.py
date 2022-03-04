@@ -38,4 +38,3 @@ class HelloKlio(beam.DoFn):
             % (element, self._klio.config.job_config.events.inputs[0].topic)
         )
         yield data
-

@@ -124,7 +124,7 @@ def context():
     return {
         "job_name": "test-job",
         "job_type": "streaming",
-        "python_version": "3.6",
+        "python_version": "3.7",
         "pipeline_options": {
             "project": "test-gcp-project",
             "region": "europe-west1",
@@ -184,7 +184,7 @@ def default_context():
     return {
         "job_name": "test-job",
         "job_type": "streaming",
-        "python_version": "3.6",
+        "python_version": "3.7",
         "use_fnapi": False,
         "create_resources": False,
         "pipeline_options": {
@@ -357,7 +357,7 @@ def test_create_dockerfile(use_fnapi, tmpdir, job):
             "worker_harness_container_image": "gcr.io/foo/bar",
             "project": "test-gcp-project",
         },
-        "python_version": "3.6",
+        "python_version": "3.7",
         "use_fnapi": use_fnapi,
         "create_resources": False,
     }
@@ -418,14 +418,7 @@ def test_validate_region_raises(job):
 
 @pytest.mark.parametrize(
     "input_version,exp_output_version",
-    (
-        ("3.6", "3.6"),
-        ("3.6.1", "3.6"),
-        ("3.7", "3.7"),
-        ("3.7.1", "3.7"),
-        ("3.8", "3.8"),
-        ("3.8.1", "3.8"),
-    ),
+    (("3.7", "3.7"), ("3.7.1", "3.7"), ("3.8", "3.8"), ("3.8.1", "3.8"),),
 )
 def test_parse_python_version(input_version, exp_output_version, job):
     assert exp_output_version == job._parse_python_version(input_version)
@@ -436,9 +429,11 @@ def test_parse_python_version(input_version, exp_output_version, job):
     (
         ("2", "Klio no longer supports Python 2.7"),
         ("2.7", "Klio no longer supports Python 2.7"),
+        ("36", "Klio no longer supports Python 3.6"),
+        ("3.6", "Klio no longer supports Python 3.6"),
         ("3", "Invalid Python version given"),
         ("3.3", "Invalid Python version given"),
-        ("3.6.7.8", "Invalid Python version given"),
+        ("3.7.8.9", "Invalid Python version given"),
     ),
 )
 def test_parse_python_version_raises(input_version, exp_msg, job):
@@ -675,7 +670,7 @@ def test_get_context_from_user_inputs(
         32,
         "n1-standard-2",
         "",
-        "3.6",
+        "3.7",
         "gs://test-gcp-project-dataflow-tmp/test-job/staging",
         "gs://test-gcp-project-dataflow-tmp/test-job/temp",
         "projects/test-parent-gcp-project/topics/test-parent-job-output",
@@ -746,7 +741,7 @@ def test_get_context_from_user_inputs_no_prompts(
     )
 
     expected_overrides["pipeline_options"].pop("project")
-    expected_overrides["python_version"] = "3.6"
+    expected_overrides["python_version"] = "3.7"
     assert not mock_prompt.call_count
     assert not mock_confirm.call_count
     mock_validate_region.assert_called_once_with("us-central1")
@@ -803,7 +798,7 @@ def test_get_context_from_user_inputs_dependency_settings(
     )
 
     expected_overrides["pipeline_options"].pop("project")
-    expected_overrides["python_version"] = "3.6"
+    expected_overrides["python_version"] = "3.7"
 
     assert not mock_prompt.call_count
     assert 1 == mock_confirm.call_count
